@@ -23,7 +23,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/minio/minio-go/v6"
+	"github.com/clook/minio-go/v6"
 )
 
 func main() {

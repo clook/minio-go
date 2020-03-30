@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/minio/minio-go/v6/pkg/s3utils"
+	"github.com/clook/minio-go/v6/pkg/s3utils"
 )
 
 // GetBucketVersioningConfiguration is the versioning configuration structure
