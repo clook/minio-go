@@ -26,23 +26,23 @@ import (
 	"github.com/clook/minio-go/v6/pkg/s3utils"
 )
 
-// GetBucketVersioningConfiguration is the versioning configuration structure
-type GetBucketVersioningConfiguration struct {
-	XMLName   xml.Name `xml:"GetBucketVersioningOutput"`
+// BucketVersioningConfiguration is the versioning configuration structure
+type BucketVersioningConfiguration struct {
+	XMLName   xml.Name `xml:"VersioningConfiguration"`
 	Status    string   `xml:"Status"`
-	MfaDelete string   `xml:"MfaDelete"`
+	MfaDelete string   `xml:"MfaDelete",omitempty`
 }
 
 // GetBucketVersioning - get versioning configuration for a bucket.
-func (c Client) GetBucketVersioning(bucketName string) (GetBucketVersioningConfiguration, error) {
+func (c Client) GetBucketVersioning(bucketName string) (BucketVersioningConfiguration, error) {
 	return c.GetBucketVersioningWithContext(context.Background(), bucketName)
 }
 
 // GetBucketVersioningWithContext gets the versioning configuration on an existing bucket with a context to control cancellations and timeouts.
-func (c Client) GetBucketVersioningWithContext(ctx context.Context, bucketName string) (GetBucketVersioningConfiguration, error) {
+func (c Client) GetBucketVersioningWithContext(ctx context.Context, bucketName string) (BucketVersioningConfiguration, error) {
 	// Input validation.
 	if err := s3utils.CheckValidBucketName(bucketName); err != nil {
-		return GetBucketVersioningConfiguration{}, err
+		return BucketVersioningConfiguration{}, err
 	}
 
 	// Get resources properly escaped and lined up before
@@ -58,21 +58,21 @@ func (c Client) GetBucketVersioningWithContext(ctx context.Context, bucketName s
 
 	defer closeResponse(resp)
 	if err != nil {
-		return GetBucketVersioningConfiguration{}, err
+		return BucketVersioningConfiguration{}, err
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return GetBucketVersioningConfiguration{}, httpRespToErrorResponse(resp, bucketName, "")
+		return BucketVersioningConfiguration{}, httpRespToErrorResponse(resp, bucketName, "")
 	}
 
 	bucketVersioningBuf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return GetBucketVersioningConfiguration{}, err
+		return BucketVersioningConfiguration{}, err
 	}
 
-	versioningConfig := GetBucketVersioningConfiguration{}
+	versioningConfig := BucketVersioningConfiguration{}
 	if err := xml.Unmarshal(bucketVersioningBuf, &versioningConfig); err != nil {
-		return GetBucketVersioningConfiguration{}, err
+		return BucketVersioningConfiguration{}, err
 	}
 	return versioningConfig, nil
 }
